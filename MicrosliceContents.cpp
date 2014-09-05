@@ -15,9 +15,9 @@ std::vector<DTM> get_dtms(const uint8_t *ms_data, size_t ms_size)
     ms_size -= DESC_OFFSET;
     auto data = reinterpret_cast<const uint16_t*>(ms_data);
     auto size = ms_size*sizeof(*ms_data)/sizeof(*data);
-
-    std::vector<DTM> dtms;
     auto end = data + size;
+
+    auto dtms = std::vector<DTM> {};
     while (data < end) {
         data += next_dtm(dtms, data);
     }
