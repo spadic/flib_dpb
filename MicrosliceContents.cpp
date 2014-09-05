@@ -27,10 +27,11 @@ std::vector<DTM> get_dtms(const uint8_t *ms_data, size_t ms_size)
 //! extract location/size of a single DTM contained in a microslice
 size_t next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
 {
-    auto n = size_t {1};
+    auto n = size_t {2};
     auto size = size_t {*data++ & 0xFFu};
-    if (size++) {
-        dtms.push_back(DTM {data, size});
+    if (size) {
+        auto addr = uint16_t {*data++};
+        dtms.push_back({addr, data, size});
         n += size;
     }
     n += (~n + 1) % 4; // skip padding (n -> k*4)
