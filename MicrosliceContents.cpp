@@ -9,6 +9,7 @@ namespace flib_dpb {
 static const size_t DESC_OFFSET {16 / sizeof(*DTM::data)};
 static std::vector<DTM> _get_dtms(const uint16_t *data, size_t size);
 static size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data);
+static std::vector<uint16_t> _pack_dtm(DTM d, uint8_t index);
 static size_t _num_padding(size_t length, size_t mult=4);
 
 // extract all DTMs from a raw buffer in "packed DTM" format
@@ -37,6 +38,17 @@ size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
     }
     n += _num_padding(n, 4); // skip padding (n -> k*4)
     return n;
+}
+
+// create "packed" form of the DTM including header and padding
+std::vector<uint16_t> _pack_dtm(DTM d, uint8_t index)
+{
+    auto result = std::vector<uint16_t> {};
+    result.push_back((index << 8) + d.size);
+    result.push_back(d.addr);
+    result.insert(end(result), d.data, d.data + d.size);
+    result.insert(end(result), _num_padding(result.size(), 4), 0x0000);
+    return result;
 }
 
 // calculate number of padding words
