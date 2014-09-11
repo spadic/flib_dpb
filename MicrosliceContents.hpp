@@ -58,7 +58,7 @@ struct MicrosliceContents {
     MicrosliceContents();
     // extract DTMs from raw data
     MicrosliceContents(const uint16_t *data, size_t size);
-    const std::vector<DTM>& dtms() const { return _dtms; };
+    const std::vector<DTM>& dtms() /* TODO const */;
     // add more DTMs and access raw data
     void add_dtm(DTM d);
     const std::vector<uint16_t>& raw();
