@@ -61,6 +61,10 @@ size_t _num_padding(size_t length, size_t mult)
 //---- private member functions --------------------------------------
 
 // copy all data into _raw and update DTM::data pointers, if not done before
+/*
+ * attention: vector (3, 5) -> [5, 5, 5]
+ *            vector {3, 5} -> [3, 5]
+ */
 void MicrosliceContents::_store_raw()
 {
     if (_stored_raw) { return; }
@@ -69,13 +73,14 @@ void MicrosliceContents::_store_raw()
     auto dtms = std::vector<DTM> {_dtms};
     // reset local data
     _dtms.clear();
-    _raw = std::vector<uint16_t> {DESC_OFFSET, 0};
+    _raw = std::vector<uint16_t> (DESC_OFFSET, 0); // do not change to {}
     // rebuild local data
     for (auto d : dtms) {
         _add_dtm(d);
     }
 
     _stored_raw = true;
+
 }
 
 void MicrosliceContents::_add_dtm(DTM d)
