@@ -5,11 +5,11 @@
 namespace flib_dpb {
 
 static const size_t DESC_OFFSET {16 / sizeof(*DTM::data)};
-static std::vector<DTM> get_dtms(const uint16_t *data, size_t size);
-static size_t next_dtm(std::vector<DTM>& dtms, const uint16_t *data);
+static std::vector<DTM> _get_dtms(const uint16_t *data, size_t size);
+static size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data);
 
 //! extract all DTMs from a microslice in "packed DTM" format
-std::vector<DTM> get_dtms(const uint16_t *data, size_t size)
+std::vector<DTM> _get_dtms(const uint16_t *data, size_t size)
 {
     data += DESC_OFFSET;
     size -= DESC_OFFSET;
@@ -17,13 +17,13 @@ std::vector<DTM> get_dtms(const uint16_t *data, size_t size)
 
     auto dtms = std::vector<DTM> {};
     while (data < end) {
-        data += next_dtm(dtms, data);
+        data += _next_dtm(dtms, data);
     }
     return dtms;
 }
 
 //! extract location/size of a single DTM contained in a microslice
-size_t next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
+size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
 {
     auto n = size_t {2};
     auto size = size_t {*data++ & 0xFFu};
@@ -37,6 +37,6 @@ size_t next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
 }
 
 MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
-: _dtms {get_dtms(data, size)} {}
+: _dtms {_get_dtms(data, size)} {}
 
 } // namespace
