@@ -9,6 +9,7 @@ namespace flib_dpb {
 static const size_t DESC_OFFSET {16 / sizeof(*DTM::data)};
 static std::vector<DTM> _get_dtms(const uint16_t *data, size_t size);
 static size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data);
+static size_t _num_padding(size_t length, size_t mult=4);
 
 // extract all DTMs from a raw buffer in "packed DTM" format
 std::vector<DTM> _get_dtms(const uint16_t *data, size_t size)
@@ -34,8 +35,15 @@ size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
         dtms.push_back({addr, data, size}); // `size` must not lie!
         n += size;
     }
-    n += (~n + 1) % 4; // skip padding (n -> k*4)
+    n += _num_padding(n, 4); // skip padding (n -> k*4)
     return n;
+}
+
+// calculate number of padding words
+// length + _num_padding(length, mult) will be a multiple of mult
+size_t _num_padding(size_t length, size_t mult)
+{
+    return (~length + 1) % mult;
 }
 
 MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
