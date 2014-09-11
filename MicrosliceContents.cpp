@@ -102,6 +102,13 @@ void MicrosliceContents::_add_dtm(DTM d)
 
 //---- public interface ----------------------------------------------
 
+MicrosliceContents::MicrosliceContents()
+: _stored_raw {false},
+  _raw {},
+  _dtms {}
+{
+}
+
 MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
 : _stored_raw {false},
   _raw {},
