@@ -4,11 +4,13 @@
 
 namespace flib_dpb {
 
+//---- static implementation details ---------------------------------
+
 static const size_t DESC_OFFSET {16 / sizeof(*DTM::data)};
 static std::vector<DTM> _get_dtms(const uint16_t *data, size_t size);
 static size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data);
 
-//! extract all DTMs from a microslice in "packed DTM" format
+// extract all DTMs from a raw buffer in "packed DTM" format
 std::vector<DTM> _get_dtms(const uint16_t *data, size_t size)
 {
     data += DESC_OFFSET;
@@ -22,14 +24,14 @@ std::vector<DTM> _get_dtms(const uint16_t *data, size_t size)
     return dtms;
 }
 
-//! extract location/size of a single DTM contained in a microslice
+// extract a single DTM from a raw buffer in "packed DTM" format
 size_t _next_dtm(std::vector<DTM>& dtms, const uint16_t *data)
 {
     auto n = size_t {2};
     auto size = size_t {*data++ & 0xFFu};
     if (size) {
         auto addr = uint16_t {*data++};
-        dtms.push_back({addr, data, size});
+        dtms.push_back({addr, data, size}); // `size` must not lie!
         n += size;
     }
     n += (~n + 1) % 4; // skip padding (n -> k*4)
