@@ -58,7 +58,61 @@ size_t _num_padding(size_t length, size_t mult)
     return (~length + 1) % mult;
 }
 
+//---- private member functions --------------------------------------
+
+// copy all data into _raw and update DTM::data pointers, if not done before
+void MicrosliceContents::_store_raw()
+{
+    if (_stored_raw) { return; }
+
+    // save a copy of the DTMs we are already tracking
+    auto dtms = std::vector<DTM> {_dtms};
+    // reset local data
+    _dtms.clear();
+    _raw = std::vector<uint16_t> {DESC_OFFSET, 0};
+    // rebuild local data
+    for (auto d : dtms) {
+        _add_dtm(d);
+    }
+
+    _stored_raw = true;
+}
+
+void MicrosliceContents::_add_dtm(DTM d)
+{
+    auto packed = _pack_dtm(d, _dtms.size());
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 9
+    auto pos_inserted = _raw.insert(end(_raw), begin(packed), end(packed));
+#else
+    // bug in GCC before version 4.9: insert returns void instead of iterator
+    // see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55817
+    auto old_size = _raw.size();
+    _raw.insert(end(_raw), begin(packed), end(packed));
+    auto pos_inserted = begin(_raw) + old_size;
+#endif
+    d.data = &(*pos_inserted);
+    _dtms.push_back(d);
+}
+
+//---- public interface ----------------------------------------------
+
 MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
-: _dtms {_get_dtms(data, size)} {}
+: _stored_raw {false},
+  _raw {},
+  _dtms {_get_dtms(data, size)}
+{
+}
+
+void MicrosliceContents::add_dtm(DTM d)
+{
+    _store_raw();
+    _add_dtm(d);
+}
+
+const std::vector<uint16_t>& MicrosliceContents::raw()
+{
+    _store_raw();
+    return _raw;
+}
 
 } // namespace
