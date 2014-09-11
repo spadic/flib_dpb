@@ -90,7 +90,8 @@ void MicrosliceContents::_add_dtm(DTM d)
     _raw.insert(end(_raw), begin(packed), end(packed));
     auto pos_inserted = begin(_raw) + old_size;
 #endif
-    d.data = &(*pos_inserted);
+    auto pos_dtm_data = pos_inserted + 2; // after `nnll aaaa`
+    d.data = &(*pos_dtm_data); // convert iterator to raw pointer
     _dtms.push_back(d);
 }
 
