@@ -55,11 +55,14 @@ struct DTM {
 };
 
 struct MicrosliceContents {
+    // create empty
     MicrosliceContents();
-    // extract DTMs from raw data
+
+    // create from existing raw data
     MicrosliceContents(const uint16_t *data, size_t size);
     const std::vector<DTM>& dtms() const;
-    // add more DTMs and access raw data
+
+    // add more DTMs and access raw data (data will be owned afterwards)
     void add_dtm(DTM d);
     const std::vector<uint16_t>& raw() const;
 
