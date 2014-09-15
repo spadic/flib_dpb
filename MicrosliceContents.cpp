@@ -70,7 +70,7 @@ void MicrosliceContents::_store_raw() const
     if (_stored_raw) { return; }
 
     // save a copy of the DTMs we are already tracking
-    auto dtms = std::vector<DTM> {_dtms};
+    auto dtms = std::vector<DTM> {std::move(_dtms)};
     // reset local data
     _dtms.clear();
     _raw = std::vector<uint16_t> (DESC_OFFSET, 0); // do not change to {}
