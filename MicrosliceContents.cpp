@@ -65,7 +65,7 @@ size_t _num_padding(size_t length, size_t mult)
  * attention: vector (3, 5) -> [5, 5, 5]
  *            vector {3, 5} -> [3, 5]
  */
-void MicrosliceContents::_store_raw()
+void MicrosliceContents::_store_raw() const
 {
     if (_stored_raw) { return; }
 
@@ -80,10 +80,9 @@ void MicrosliceContents::_store_raw()
     }
 
     _stored_raw = true;
-
 }
 
-void MicrosliceContents::_add_dtm(DTM d)
+void MicrosliceContents::_add_dtm(DTM d) const
 {
     auto packed = _pack_dtm(d, _dtms.size());
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 9
@@ -116,7 +115,7 @@ MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
 {
 }
 
-const std::vector<DTM>& MicrosliceContents::dtms() /* const */ {
+const std::vector<DTM>& MicrosliceContents::dtms() const {
     // TODO do this somewhere else, this method should be const
     if (_stored_raw) {
         _dtms = _get_dtms(_raw.data(), _raw.size());
@@ -130,7 +129,7 @@ void MicrosliceContents::add_dtm(DTM d)
     _add_dtm(d);
 }
 
-const std::vector<uint16_t>& MicrosliceContents::raw()
+const std::vector<uint16_t>& MicrosliceContents::raw() const
 {
     _store_raw();
     return _raw;
