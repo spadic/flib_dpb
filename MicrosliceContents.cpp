@@ -70,11 +70,6 @@ void MicrosliceContents::_store_raw()
     if (_stored_raw) { return; }
 
     // save a copy of the DTMs we are already tracking
-    // TODO there is a bug somewhere
-    //      also if we std::move(_dtms), it is even worse, why? should work?
-    // ANSWER: the DTM::data pointers stored in the entries _dtms get
-    // invalidated once _raw is reallocated --> must recalculate the
-    // pointers (by calling _get_dtms) once this happens.
     auto dtms = std::vector<DTM> {_dtms};
     // reset local data
     _dtms.clear();
