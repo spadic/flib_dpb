@@ -116,8 +116,8 @@ MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
 }
 
 const std::vector<DTM>& MicrosliceContents::dtms() const {
-    // TODO do this somewhere else, this method should be const
     if (_stored_raw) {
+        // TODO do this not every time
         _dtms = _get_dtms(_raw.data(), _raw.size());
     }
     return _dtms;
