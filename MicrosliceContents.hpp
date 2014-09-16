@@ -55,9 +55,6 @@ struct DTM {
 };
 
 struct MicrosliceContents {
-    // create empty
-    MicrosliceContents();
-
     // create from existing raw data
     MicrosliceContents(const uint16_t *data, size_t size);
     const std::vector<DTM>& dtms() const;
@@ -66,6 +63,7 @@ struct MicrosliceContents {
     /*
      * TODO this part seems to work, but is not implemented very nice
      */
+    MicrosliceContents();
     void add_dtm(DTM d);
     const std::vector<uint16_t>& raw() const;
 
