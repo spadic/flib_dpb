@@ -63,6 +63,9 @@ struct MicrosliceContents {
     const std::vector<DTM>& dtms() const;
 
     // add more DTMs and access raw data (data will be owned afterwards)
+    /*
+     * TODO this part seems to work, but is not implemented very nice
+     */
     void add_dtm(DTM d);
     const std::vector<uint16_t>& raw() const;
 
