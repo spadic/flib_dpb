@@ -84,7 +84,8 @@ void MicrosliceContents::_store_raw() const
 
 void MicrosliceContents::_add_dtm(DTM d) const
 {
-    auto packed = _pack_dtm(d, _dtms.size());
+    auto index = static_cast<uint8_t>(_dtms.size() + _start_index);
+    auto packed = _pack_dtm(d, index);
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 9
     auto pos_inserted = _raw.insert(end(_raw), begin(packed), end(packed));
 #else
@@ -101,15 +102,18 @@ void MicrosliceContents::_add_dtm(DTM d) const
 
 //---- public interface ----------------------------------------------
 
-MicrosliceContents::MicrosliceContents()
-: _stored_raw {false},
+MicrosliceContents::MicrosliceContents(uint8_t start_index)
+: _start_index {start_index},
+  _stored_raw {false},
   _raw {},
   _dtms {}
 {
 }
 
 MicrosliceContents::MicrosliceContents(const uint16_t *data, size_t size)
-: _stored_raw {false},
+: _start_index {static_cast<uint8_t>(size > DESC_OFFSET ?
+                                     *(data + DESC_OFFSET) >> 8 : 0)},
+  _stored_raw {false},
   _raw {},
   _dtms {_get_dtms(data, size)}
 {

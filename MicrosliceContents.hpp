@@ -63,13 +63,15 @@ struct MicrosliceContents {
     /*
      * TODO this part seems to work, but is not implemented very nice
      */
-    MicrosliceContents();
+    MicrosliceContents(uint8_t start_index = 0);
     void add_dtm(DTM d);
     const std::vector<uint16_t>& raw() const;
 
 private:
     void _store_raw() const;
     void _add_dtm(DTM d) const;
+
+    uint8_t _start_index;
     mutable bool _stored_raw;
     mutable std::vector<uint16_t> _raw;
     mutable std::vector<DTM> _dtms;
