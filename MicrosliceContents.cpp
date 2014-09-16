@@ -14,6 +14,8 @@ static size_t _num_padding(size_t length, size_t mult=4);
 // extract all DTMs from a raw buffer in "packed DTM" format
 std::vector<DTM> _get_dtms(const uint16_t *data, size_t size)
 {
+    if (size < DESC_OFFSET) { return {}; }
+
     data += DESC_OFFSET;
     size -= DESC_OFFSET;
     auto end = data + size;
